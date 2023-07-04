@@ -1,0 +1,20 @@
+CC = gcc
+JC = javac
+CFLAGS = -Wall
+
+SHELL_SRC = shell.c
+SHELL_OUT = shell
+
+GEN_SUM_SUBTRACT_SRC = GenerateSumSubtract.java
+GEN_SUM_SUBTRACT_CLASS = GenerateSumSubtract.class
+
+all: $(SHELL_OUT) $(GEN_SUM_SUBTRACT_CLASS)
+
+$(SHELL_OUT): $(SHELL_SRC)
+	$(CC) $(CFLAGS) -o $(SHELL_OUT) $(SHELL_SRC)
+
+$(GEN_SUM_SUBTRACT_CLASS): $(GEN_SUM_SUBTRACT_SRC)
+	$(JC) $(GEN_SUM_SUBTRACT_SRC)
+
+clean:
+	rm -f $(SHELL_OUT) $(GEN_SUM_SUBTRACT_CLASS)
