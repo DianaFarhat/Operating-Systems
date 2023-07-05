@@ -10,7 +10,7 @@ public class JavaCommands {
             System.out.print("basic240-shell> ");
             String input = scanner.nextLine();
 
-           if (input.equals("exit")) {
+            if (input.equals("exit")) {
                 break;
             } else if (input.equals("ls")) {
                 listFiles();
@@ -21,10 +21,11 @@ public class JavaCommands {
                         System.out.println("Invalid arguments for generate command.");
                         continue;
                     }
-                    int lowerBound = 1;
-                    int upperBound = 10; // Modify the range as needed
-                    int randomNumber = generateRandom(lowerBound, upperBound);
-                    System.out.println("Generated random number: " + randomNumber);
+                    int lowerBound = 0;
+                    int upperBound = 10;
+                    int randomNumber1 = generateRandom(lowerBound, upperBound);
+                    int randomNumber2 = generateRandom(lowerBound, upperBound);
+                    System.out.println("Generated random numbers: " + randomNumber1 + " " + randomNumber2);
                 } else if (command[0].equals("sum")) {
                     if (command.length != 3) {
                         System.out.println("Invalid arguments for sum command.");
@@ -64,16 +65,8 @@ public class JavaCommands {
     }
 
     private static void listFiles() {
-        // Specify the directory path
-        String directoryPath = "."; // Current directory
-
-        // Create a File object for the directory
-        File directory = new File(directoryPath);
-
-        // Get the list of files and directories in the directory
-        File[] files = directory.listFiles();
-
-        // Print the names of files and directories
+        File currentDir = new File(".");
+        File[] files = currentDir.listFiles();
         for (File file : files) {
             System.out.println(file.getName());
         }
