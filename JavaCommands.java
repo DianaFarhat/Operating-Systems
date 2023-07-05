@@ -10,19 +10,20 @@ public class JavaCommands {
             System.out.print("basic240-shell> ");
             String input = scanner.nextLine();
 
-            if (input.equals("exit")) {
+           if (input.equals("exit")) {
                 break;
             } else if (input.equals("ls")) {
                 listFiles();
             } else {
                 String[] command = input.split(" ");
                 if (command[0].equals("generate")) {
-                    if (command.length != 2) {
+                    if (command.length != 1) {
                         System.out.println("Invalid arguments for generate command.");
                         continue;
                     }
-                    int upperBound = Integer.parseInt(command[1]);
-                    int randomNumber = generateRandom(1, upperBound);
+                    int lowerBound = 1;
+                    int upperBound = 10; // Modify the range as needed
+                    int randomNumber = generateRandom(lowerBound, upperBound);
                     System.out.println("Generated random number: " + randomNumber);
                 } else if (command[0].equals("sum")) {
                     if (command.length != 3) {
