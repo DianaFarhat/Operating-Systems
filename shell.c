@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define BUFFER_SIZE 100
+#define BUFFER_SIZE 4 //command, max (2 arguments) & NULL pointer
 
 void executeCommand(char* command) {
     char* arguments[BUFFER_SIZE];
