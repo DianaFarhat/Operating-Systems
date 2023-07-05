@@ -17,10 +17,6 @@ public class JavaCommands {
             } else {
                 String[] command = input.split(" ");
                 if (command[0].equals("generate")) {
-                    if (command.length != 3) {
-                        System.out.println("Invalid arguments for generate command.");
-                        continue;
-                    }
                     int lowerBound = Integer.parseInt(command[1]);
                     int upperBound = Integer.parseInt(command[2]);
                     int randomNumber = generateRandom(lowerBound, upperBound);
