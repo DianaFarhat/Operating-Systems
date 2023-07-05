@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define BUFFER_SIZE 4 //command, max (2 arguments) & NULL pointer
+#define BUFFER_SIZE 256 // Increased buffer size for commands and arguments
 
 void executeCommand(char* command) {
     char* arguments[BUFFER_SIZE];
@@ -16,21 +16,31 @@ void executeCommand(char* command) {
         i++;
     }
 
-   if (strcmp(arguments[0], "ls") == 0) {
-    execvp("java", (char*[]){"java", "JavaCommands", "ls", NULL});
+    if (strcmp(arguments[0], "ls") == 0) {
+        execvp("java", (char*[]){"java", "JavaCommands", "ls", NULL});
     } else if (strcmp(arguments[0], "generate") == 0) {
-    execvp("java", (char*[]){"java", "JavaCommands", "generate", NULL});
+        if (arguments[1] != NULL) {
+            printf("Invalid arguments for generate command.\n");
+            exit(1);
+        }
+        execvp("java", (char*[]){"java", "JavaCommands", "generate", NULL});
     } else if (strcmp(arguments[0], "sum") == 0) {
-    execvp("java", (char*[]){"java", "JavaCommands", "sum", NULL});
+        if (arguments[2] == NULL) {
+            printf("Invalid arguments for sum command.\n");
+            exit(1);
+        }
+        execvp("java", (char*[]){"java", "JavaCommands", "sum", arguments[1], arguments[2], NULL});
     } else if (strcmp(arguments[0], "subtract") == 0) {
-    execvp("java", (char*[]){"java", "JavaCommands", "subtract", NULL});
+        if (arguments[2] == NULL) {
+            printf("Invalid arguments for subtract command.\n");
+            exit(1);
+        }
+        execvp("java", (char*[]){"java", "JavaCommands", "subtract", arguments[1], arguments[2], NULL});
     } else {
-    printf("Invalid command: %s\n", arguments[0]);
-    exit(1);
+        printf("Invalid command: %s\n", arguments[0]);
+        exit(1);
     }
-
 }
-
 
 void executePipeline(char* firstCommand, char* secondCommand) {
     int pipefd[2];
