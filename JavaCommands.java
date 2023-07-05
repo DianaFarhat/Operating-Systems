@@ -17,9 +17,12 @@ public class JavaCommands {
             } else {
                 String[] command = input.split(" ");
                 if (command[0].equals("generate")) {
-                    int lowerBound = 0;
-                    int upperBound = 10;
-                    int randomNumber = generateRandom(lowerBound, upperBound);
+                    if (command.length != 2) {
+                        System.out.println("Invalid arguments for generate command.");
+                        continue;
+                    }
+                    int upperBound = Integer.parseInt(command[1]);
+                    int randomNumber = generateRandom(1, upperBound);
                     System.out.println("Generated random number: " + randomNumber);
                 } else if (command[0].equals("sum")) {
                     if (command.length != 3) {
