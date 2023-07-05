@@ -16,18 +16,19 @@ void executeCommand(char* command) {
         i++;
     }
 
-    if (strcmp(arguments[0], "ls") == 0) {
-        execvp("ls", arguments);
+   if (strcmp(arguments[0], "ls") == 0) {
+    execvp("java", (char*[]){"java", "JavaCommands", "ls", NULL});
     } else if (strcmp(arguments[0], "generate") == 0) {
-        execvp("java", (char*[]){"java", "GenerateSumSubtract", "generate", NULL});
+    execvp("java", (char*[]){"java", "JavaCommands", "generate", NULL});
     } else if (strcmp(arguments[0], "sum") == 0) {
-        execvp("java", (char*[]){"java", "GenerateSumSubtract", "sum", NULL});
+    execvp("java", (char*[]){"java", "JavaCommands", "sum", NULL});
     } else if (strcmp(arguments[0], "subtract") == 0) {
-        execvp("java", (char*[]){"java", "GenerateSumSubtract", "subtract", NULL});
+    execvp("java", (char*[]){"java", "JavaCommands", "subtract", NULL});
     } else {
-        printf("Invalid command: %s\n", arguments[0]);
-        exit(1);
+    printf("Invalid command: %s\n", arguments[0]);
+    exit(1);
     }
+
 }
 
 
