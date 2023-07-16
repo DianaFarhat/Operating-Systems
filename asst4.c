@@ -4,7 +4,7 @@
 
 #define MAX_SPECIAL_READERS 3
 
-sem_t order, wrt, mutex;
+sem_t order, wrt, mutex, countMutex;
 int readcount = 0;
 int n; // Number of times readers and writers execute
 int readerCount = 0; // Counter for the number of times readers executed
@@ -17,19 +17,27 @@ void *specialReader(void *arg) {
     while (1) {
         sem_wait(&order);
         sem_wait(&mutex);
+        if (totalExecutionCount >= n) {
+            sem_post(&mutex);
+            sem_post(&order);
+            break;
+        }
         readcount++;
         if (readcount == 1)
             sem_wait(&wrt);
         sem_post(&mutex);
         sem_post(&order);
 
-        // Increment readerCount and totalExecutionCount
-        __sync_fetch_and_add(&readerCount, 1);
-        __sync_fetch_and_add(&totalExecutionCount, 1);
-
         // Reading is performed
         printf("SpecialReader %d: Enter\n", id);
         printf("SpecialReader %d: Execute\n", id);
+
+        sem_wait(&countMutex);
+        if (totalExecutionCount < n) {
+            readerCount++;
+            totalExecutionCount++;
+        }
+        sem_post(&countMutex);
 
         sem_wait(&mutex);
         readcount--;
@@ -38,12 +46,6 @@ void *specialReader(void *arg) {
         sem_post(&mutex);
 
         printf("SpecialReader %d: Exit\n", id);
-
-       
-
-        // Check if termination condition is met
-        if (totalExecutionCount >= n)
-            break;
     }
 
     return NULL;
@@ -54,6 +56,10 @@ void *specialWriter(void *arg) {
 
     while (1) {
         sem_wait(&order);
+        if (totalExecutionCount >= n) {
+            sem_post(&order);
+            break;
+        }
         sem_wait(&wrt);
         sem_post(&order);
 
@@ -62,17 +68,14 @@ void *specialWriter(void *arg) {
         printf("SpecialWriter %d: Execute\n", id);
         printf("SpecialWriter %d: Exit\n", id);
 
-        // Increment writerCount and totalExecutionCount
-        __sync_fetch_and_add(&writerCount, 1);
-        __sync_fetch_and_add(&totalExecutionCount, 1);
-
-
         sem_post(&wrt);
 
-       
-        // Check if termination condition is met
-        if (totalExecutionCount >= n)
-            break;
+        sem_wait(&countMutex);
+        if (totalExecutionCount < n) {
+            writerCount++;
+            totalExecutionCount++;
+        }
+        sem_post(&countMutex);
     }
 
     return NULL;
@@ -84,10 +87,11 @@ int main() {
     int n_values[] = {10, 20, 50, 100, 500, 1000}; // Values of n for benchmarking
     int num_n_values = sizeof(n_values) / sizeof(n_values[0]); // Number of n values to benchmark
 
-     // Initialize semaphores
+    // Initialize semaphores
     sem_init(&order, 0, 1);
     sem_init(&wrt, 0, 1);
     sem_init(&mutex, 0, 1);
+    sem_init(&countMutex, 0, 1);
 
     // Create output file
     FILE *outputFile = fopen("output.txt", "w");
@@ -140,12 +144,11 @@ int main() {
     // Close output file
     fclose(outputFile);
 
-    
     // Destroy semaphores
     sem_destroy(&order);
     sem_destroy(&wrt);
     sem_destroy(&mutex);
-
+    sem_destroy(&countMutex);
 
     return 0;
 }
